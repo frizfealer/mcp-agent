@@ -2,12 +2,14 @@
 
 ## 1. Current Focus
 
-- Implementing the `UseCaseGenerator` module.
-- Integrating with LLM for use case extraction.
-- Updating Memory Bank documentation.
+- Integrating the `UseCaseGenerator` module into `src/main.py`.
+- Planning and beginning implementation of the `SearchEngine` module (`src/search_engine/`).
+- Updating Memory Bank documentation (this current task).
 
-## 2. Recent Decisions
+## 2. Recent Achievements & Decisions
 
+- Successfully implemented the `UseCaseGenerator` module (`src/use_case_generator.py`) using OpenAI's JSON mode and Pydantic models for structured output.
+- Developed comprehensive unit tests for `UseCaseGenerator` (`tests/unit/test_use_case_generator.py`), ensuring its reliability.
 - Agreed on the core Memory Bank file structure and initial content.
 - Confirmed Python as the primary programming language.
 - Decided on a project structure (`src/`, `tests/unit/`) and `python-dotenv` for environment variables.
@@ -22,7 +24,12 @@
 - Develop initial prompt templates and configure the OpenAI API call to use JSON mode, ensuring the LLM's output conforms to the Pydantic model.
 - Modify `src/main.py` to call the `UseCaseGenerator` and log the structured output.
 - Add initial unit tests for `src/use_case_generator.py`, potentially mocking LLM API calls.
-- Update `progress.md` to reflect these new next steps.
+- Integrate the `UseCaseGenerator` into `src/main.py` to process input and display generated use cases.
+- Begin detailed planning and scaffolding for the `SearchEngine` module (`src/search_engine/`).
+  - Define `SearchManager` class.
+  - Outline interfaces for individual source handlers (e.g., GitHub, web sources).
+- Develop initial unit tests for the `SearchEngine` components.
+- Update `progress.md` to reflect these advancements.
 
 ## 4. Key Considerations & Learnings
 

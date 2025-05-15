@@ -8,29 +8,30 @@
 - Basic `InputParser` class in `src/input_parser.py` (text stripping, type checking).
 - Logging configuration via `src/config.py` (custom format, INFO level).
 - Environment variable loading for API keys and configurations in `src/config.py`.
+- `src/use_case_generator.py` (Full implementation including LLM integration using OpenAI JSON mode and Pydantic models).
+- `tests/unit/test_use_case_generator.py` (Comprehensive unit tests for `UseCaseGenerator`).
 
 ## 2. What's Left to Build
 
 - Core Python modules:
-  - `src/main.py` (Integrate remaining workflow: UseCaseGenerator, SearchEngine, ResultsFormatter).
+  - `src/main.py` (Integrate `UseCaseGenerator`, then `SearchEngine`, `ResultsFormatter`).
   - `src/config.py` (Potentially add more specific configurations as modules are developed).
-  - `src/use_case_generator.py` (Full implementation including LLM integration and prompt engineering).
   - `src/search_engine/` (Full implementation including `search_manager.py` and individual source handlers).
   - `src/results_formatter.py` (Full implementation).
-- Unit tests for all new and existing modules (`tests/unit/`).
+- Unit tests for remaining modules (`src/input_parser.py`, `src/main.py`, `src/config.py`, `src/search_engine/`, `src/results_formatter.py`).
 - Project `README.md`.
 
 ## 3. Current Status
 
-- **Phase:** Use Case Generation Phase.
-- **Current Activity:** Planning and starting the implementation of the `UseCaseGenerator` module.
+- **Phase:** Search Engine Planning & Integration Phase.
+- **Current Activity:** Integrating `UseCaseGenerator` into `main.py`, and planning the `SearchEngine` module.
 - **Next Immediate Steps:**
-    1. Define the `UseCaseGenerator` class/functions in `src/use_case_generator.py`.
-    2. Integrate with the OpenAI LLM API using `src/config.py` to fetch the API key.
-    3. Define a Pydantic model specifying the desired JSON structure for the list of use cases.
-    4. Develop initial prompt templates and configure the OpenAI API call to use JSON mode, ensuring the LLM's output conforms to the Pydantic model.
-    5. Modify `src/main.py` to call the `UseCaseGenerator` and log the structured output.
-    6. Add initial unit tests for `src/use_case_generator.py`, potentially mocking LLM API calls.
+    1. Integrate `UseCaseGenerator` into `src/main.py` to call it with parsed input and log/display the structured output.
+    2. Begin detailed planning for the `SearchEngine` module (`src/search_engine/`).
+        - Define `SearchManager` class structure.
+        - Outline interfaces and initial logic for source handlers (e.g., GitHub, web sources).
+    3. Start scaffolding `src/search_engine/` and its basic components.
+    4. Add/update unit tests for `src/main.py` to cover `UseCaseGenerator` integration.
 
 ## 4. Known Issues / Blockers
 
@@ -40,6 +41,11 @@
 
 ## 5. Evolution of Project Decisions
 
+- **2025-05-14:**
+  - Completed implementation of `UseCaseGenerator` (`src/use_case_generator.py`) utilizing OpenAI's JSON mode with Pydantic models for robust, structured output.
+  - Developed comprehensive unit tests for `UseCaseGenerator` (`tests/unit/test_use_case_generator.py`), ensuring its functionality and error handling.
+  - Updated Memory Bank (`activeContext.md`, `progress.md`) to reflect these advancements.
+  - Next focus: Integrating `UseCaseGenerator` into `main.py` and commencing work on the `SearchEngine` module.
 - **2025-05-14:**
   - Reviewed and approved initial implementations for user input (`src/main.py`), input parsing (`src/input_parser.py`), and logging/configuration (`src/config.py`). Confirmed these components are sensible.
   - Planned next phase: `UseCaseGenerator` module implementation.
