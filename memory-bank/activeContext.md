@@ -2,7 +2,6 @@
 
 ## 1. Current Focus
 
-- Integrating the `UseCaseGenerator` module into `src/main.py`.
 - Planning and beginning implementation of the `SearchEngine` module (`src/search_engine/`).
 - Updating Memory Bank documentation (this current task).
 
@@ -10,6 +9,7 @@
 
 - Successfully implemented the `UseCaseGenerator` module (`src/use_case_generator.py`) using OpenAI's JSON mode and Pydantic models for structured output.
 - Developed comprehensive unit tests for `UseCaseGenerator` (`tests/unit/test_use_case_generator.py`), ensuring its reliability.
+- Integrated `UseCaseGenerator` into `src/main.py`, allowing it to process user input and display generated use cases.
 - Agreed on the core Memory Bank file structure and initial content.
 - Confirmed Python as the primary programming language.
 - Decided on a project structure (`src/`, `tests/unit/`) and `python-dotenv` for environment variables.
@@ -18,18 +18,12 @@
 
 ## 3. Next Steps (Implementation Phase)
 
-- Define the `UseCaseGenerator` class/functions in `src/use_case_generator.py`.
-- Integrate with the OpenAI LLM API using `src/config.py` to fetch the API key.
-- Define a Pydantic model specifying the desired JSON structure for the list of use cases.
-- Develop initial prompt templates and configure the OpenAI API call to use JSON mode, ensuring the LLM's output conforms to the Pydantic model.
-- Modify `src/main.py` to call the `UseCaseGenerator` and log the structured output.
-- Add initial unit tests for `src/use_case_generator.py`, potentially mocking LLM API calls.
-- Integrate the `UseCaseGenerator` into `src/main.py` to process input and display generated use cases.
 - Begin detailed planning and scaffolding for the `SearchEngine` module (`src/search_engine/`).
   - Define `SearchManager` class.
   - Outline interfaces for individual source handlers (e.g., GitHub, web sources).
 - Develop initial unit tests for the `SearchEngine` components.
-- Update `progress.md` to reflect these advancements.
+- Develop/update unit tests for `src/main.py` to cover its current functionality (including `InputParser` and `UseCaseGenerator` interaction).
+- Update `progress.md` to reflect these advancements (if further major changes occur).
 
 ## 4. Key Considerations & Learnings
 

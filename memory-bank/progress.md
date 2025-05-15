@@ -10,11 +10,12 @@
 - Environment variable loading for API keys and configurations in `src/config.py`.
 - `src/use_case_generator.py` (Full implementation including LLM integration using OpenAI JSON mode and Pydantic models).
 - `tests/unit/test_use_case_generator.py` (Comprehensive unit tests for `UseCaseGenerator`).
+- `src/main.py` (Basic integration of `InputParser` and `UseCaseGenerator`, displaying their outputs).
 
 ## 2. What's Left to Build
 
 - Core Python modules:
-  - `src/main.py` (Integrate `UseCaseGenerator`, then `SearchEngine`, `ResultsFormatter`).
+  - `src/main.py` (Integrate `SearchEngine`, `ResultsFormatter`).
   - `src/config.py` (Potentially add more specific configurations as modules are developed).
   - `src/search_engine/` (Full implementation including `search_manager.py` and individual source handlers).
   - `src/results_formatter.py` (Full implementation).
@@ -23,15 +24,14 @@
 
 ## 3. Current Status
 
-- **Phase:** Search Engine Planning & Integration Phase.
-- **Current Activity:** Integrating `UseCaseGenerator` into `main.py`, and planning the `SearchEngine` module.
+- **Phase:** Search Engine Planning & Implementation Phase.
+- **Current Activity:** Planning the `SearchEngine` module.
 - **Next Immediate Steps:**
-    1. Integrate `UseCaseGenerator` into `src/main.py` to call it with parsed input and log/display the structured output.
-    2. Begin detailed planning for the `SearchEngine` module (`src/search_engine/`).
+    1. Begin detailed planning for the `SearchEngine` module (`src/search_engine/`).
         - Define `SearchManager` class structure.
         - Outline interfaces and initial logic for source handlers (e.g., GitHub, web sources).
-    3. Start scaffolding `src/search_engine/` and its basic components.
-    4. Add/update unit tests for `src/main.py` to cover `UseCaseGenerator` integration.
+    2. Start scaffolding `src/search_engine/` and its basic components.
+    3. Develop/update unit tests for `src/main.py` to cover its current functionality (including `InputParser` and `UseCaseGenerator` interaction).
 
 ## 4. Known Issues / Blockers
 
@@ -44,8 +44,9 @@
 - **2025-05-14:**
   - Completed implementation of `UseCaseGenerator` (`src/use_case_generator.py`) utilizing OpenAI's JSON mode with Pydantic models for robust, structured output.
   - Developed comprehensive unit tests for `UseCaseGenerator` (`tests/unit/test_use_case_generator.py`), ensuring its functionality and error handling.
+  - Integrated `UseCaseGenerator` into `src/main.py` to process inputs and display generated use cases.
   - Updated Memory Bank (`activeContext.md`, `progress.md`) to reflect these advancements.
-  - Next focus: Integrating `UseCaseGenerator` into `main.py` and commencing work on the `SearchEngine` module.
+  - Next focus: Commencing work on the `SearchEngine` module.
 - **2025-05-14:**
   - Reviewed and approved initial implementations for user input (`src/main.py`), input parsing (`src/input_parser.py`), and logging/configuration (`src/config.py`). Confirmed these components are sensible.
   - Planned next phase: `UseCaseGenerator` module implementation.
