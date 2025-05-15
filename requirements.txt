@@ -1,0 +1,23 @@
+# Core dependencies
+python-dotenv
+httpx
+beautifulsoup4
+lxml # Parser for BeautifulSoup
+
+# LLM Client Libraries (User to uncomment/add specific one)
+openai
+# anthropic
+pydantic
+
+# GitHub API
+PyGithub
+
+# Markdown Processing (optional, if needed for READMEs etc.)
+# markdown-it-py
+
+# Testing (pytest is recommended)
+pytest
+
+# CLI (optional, for more advanced CLI features than argparse)
+# typer
+# click
