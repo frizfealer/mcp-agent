@@ -4,18 +4,18 @@
 
 - **Primary Programming Language:** Python (version 3.8+ recommended for `asyncio` features and library compatibility).
 - **LLM Integration:**
-  - **Choice of LLM:** To be decided by the user (e.g., OpenAI's GPT series, Anthropic's Claude, Google's Gemini). The system will need an API key for the chosen service.
+  - **Choice of LLM:** Currently, OpenAI's GPT series (e.g., `gpt-4.1-mini`) is used by `UseCaseGenerator` and `GitHubSource`. The system requires an `OPENAI_API_KEY`.
   - **Python LLM Client Libraries:**
-    - `openai` (if using OpenAI models)
-    - `anthropic` (if using Anthropic models)
-    - Generic HTTP library like `httpx` if interacting with other LLM APIs.
+    - `openai` (used by `UseCaseGenerator` and `GitHubSource`).
+    - `anthropic` (option for future if Anthropic models are used).
+    - Generic HTTP library like `httpx` (option for other LLM APIs).
 - **Web Interaction & Scraping (for MCP/API Search):**
-  - **HTTP Client:** `httpx` (for robust synchronous and asynchronous HTTP requests).
-  - **HTML/XML Parsing:** `BeautifulSoup4` (with `lxml` parser for performance).
-  - **GitHub API Client:** `PyGithub` (for interacting with GitHub API).
-  - **Apify SDK:** `apify-client` (Python) if using Apify platform/actors.
+  - **HTTP Client:** `httpx` (for robust synchronous and asynchronous HTTP requests, potentially by future web scraping sources).
+  - **HTML/XML Parsing:** `BeautifulSoup4` (with `lxml` parser for performance, for potential future web scraping sources).
+  - **GitHub API Client:** `PyGithub` (used by `GitHubSource` for fetching READMEs if cache is stale and for fetching star counts).
+  - **Apify SDK:** `apify-client` (Python) if using Apify platform/actors (for potential future sources).
 - **Markdown Processing:**
-  - `markdown-it-py` (for parsing or rendering Markdown, e.g., from READMEs).
+  - `markdown-it-py` (used by `GitHubSource` for parsing cached GitHub READMEs to extract specific sections).
 - **Environment Variable Management:**
   - `python-dotenv` (to load environment variables from an `.env` file).
 - **Testing Framework:**

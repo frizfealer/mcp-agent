@@ -19,9 +19,12 @@ graph TD
         E[src/results_formatter.py]
     end
 
-    C --> X[LLM API (External)];
+    C --> X[LLM API (External for UseCaseGenerator)];
     C --> Y[Prompt Templates (Managed within Use Case Generator)];
-    D --> Z[Prioritized Web Sources & GitHub API (External)];
+    D --> Z_GH_LLM[LLM API (External for GitHubSource)];
+    D --> Z_GH_API[GitHub API (for READMEs/Stars)];
+    D --> Z_GH_CACHE[Curated GitHub READMEs (Local Cache)];
+    Z_GH_CACHE --> D;
     F --> G[User's Terminal]
 ```
 
@@ -39,11 +42,16 @@ graph TD
   - Takes structured use cases one by one.
   - For each use case, formulates search queries.
   - Iterates through a configured, prioritized list of sources:
-    - Specific MCP/API websites (e.g., `mcp.pipedream.com`, `mcpmarket.com`).
-    - GitHub repositories (e.g., `modelcontextprotocol/servers`, `punkpeye/awesome-mcp-servers`) via GitHub API.
-    - General API directories or search engines as fallback if needed.
-  - Extracts MCP/API names, descriptions, links, and relevant metadata (GitHub stars, README summaries).
-  - Implemented with sub-modules for each source type (e.g., `src/search_engine/sources/github_source.py`).
+    - Specific MCP/API websites (e.g., `mcp.pipedream.com`, `mcpmarket.com`) (implementation deferred for these specific sources).
+    - `GitHubSource` (`src/search_engine/sources/github_source.py`):
+      - Maintains local cached copies of predefined GitHub README files (e.g., from `modelcontextprotocol/servers`, `punkpeye/awesome-mcp-servers`, `appcypher/awesome-mcp-servers`) located in `resources/github/`.
+      - Updates these caches periodically if a `GITHUB_TOKEN` is available and files are older than one week.
+      - Uses an LLM (e.g., `gpt-4.1-mini`) with a detailed system prompt to analyze the content of these cached files against the user's use case.
+      - Extracts relevant sections from the Markdown (using `markdown-it-py`) for focused LLM analysis.
+      - Optionally fetches GitHub stars for identified MCPs using the GitHub API.
+    - General API directories or search engines as fallback if needed (implementation deferred).
+  - Extracts MCP/API names, descriptions, links, and relevant metadata.
+  - Implemented with sub-modules for each source type.
 - **Results Formatter (`src/results_formatter.py`):**
   - Takes the list of use cases and their corresponding top N found MCPs/APIs.
   - Organizes this data into a human-readable Markdown report.

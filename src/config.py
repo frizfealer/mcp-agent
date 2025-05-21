@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 # Load environment variables from .env file
 # Looks for .env in the current directory or parent directories
-load_dotenv()
+load_dotenv(override=True)
 
 # --- LLM Configuration ---
 # Example: OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -35,7 +35,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")  # Generic name, user to replace wi
 LLM_MODEL_NAME = os.getenv("LLM_MODEL_NAME", "default-model")  # Example, if model can be configured
 
 # --- GitHub Configuration ---
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")  # Optional, but recommended for higher rate limits
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 
 # --- Search Engine Configuration ---
 # List of prioritized sources for MCP/API search
@@ -50,37 +50,66 @@ MCP_SOURCE_URLS = {
     "github_awesome_mcp_servers": "https://github.com/punkpeye/awesome-mcp-servers",
 }
 
+# Specific repositories to search within (e.g., for targeted MCP server lists)
+# User can add to this list in their .env file by providing a comma-separated string
+# e.g., GITHUB_REPOSITORIES_TO_SEARCH="org1/repo1,org2/repo2"
+_github_repos_env = os.getenv("GITHUB_REPOSITORIES_TO_SEARCH", "")
+GITHUB_REPOSITORIES_TO_SEARCH: list[str] = (
+    [repo.strip() for repo in _github_repos_env.split(",") if repo.strip()] if _github_repos_env else []
+)
+
+# Default limit for results per search source
+try:
+    SEARCH_RESULT_LIMIT_PER_SOURCE = int(os.getenv("SEARCH_RESULT_LIMIT_PER_SOURCE", "5"))
+except ValueError:
+    logger.warning(
+        f"Invalid value for SEARCH_RESULT_LIMIT_PER_SOURCE: '{os.getenv('SEARCH_RESULT_LIMIT_PER_SOURCE')}'. "
+        f"Defaulting to 5."
+    )
+    SEARCH_RESULT_LIMIT_PER_SOURCE = 5
+
+# Enabled search sources, comma-separated in .env, e.g., "github,pipedream"
+_search_sources_env = os.getenv("SEARCH_SOURCES_ENABLED", "github")  # Default to github
+SEARCH_SOURCES_ENABLED: list[str] = [
+    source.strip().lower() for source in _search_sources_env.split(",") if source.strip()
+]
+
+
 # --- Other Configurations ---
 # Example: LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 
 
-def get_LLM_model_name():
+def get_LLM_model_name() -> str:
     """Returns the configured LLM model name."""
     if not LLM_MODEL_NAME:
-        print("Warning: LLM_MODEL_NAME is not set in .env file.")
-    return LLM_MODEL_NAME
+        logger.warning("LLM_MODEL_NAME is not set in .env file. Using default.")
+    return LLM_MODEL_NAME or "default-model"  # Ensure a string is returned
 
 
-def get_llm_api_key():
+def get_llm_api_key() -> str | None:
     """Returns the configured LLM API key."""
     if not OPENAI_API_KEY:
         # Consider raising an error or returning a default/None and handling in the calling code
-        print("Warning: OPENAI_API_KEY is not set in .env file.")
+        logger.warning("OPENAI_API_KEY is not set in .env file.")
     return OPENAI_API_KEY
 
 
-def get_github_token():
+def get_github_token() -> str | None:
     """Returns the configured GitHub token."""
     if not GITHUB_TOKEN:
-        print("Info: GITHUB_TOKEN is not set in .env file. GitHub API calls may be rate-limited.")
+        logger.info("GITHUB_TOKEN is not set in .env file. GitHub API calls may be rate-limited.")
     return GITHUB_TOKEN
 
 
 # Add more getter functions as needed for other configurations
 
 if __name__ == "__main__":
-    # For testing an_github_token = get_github_token()d displaying loaded configs
-    logger.info(f"LLM API Key Loaded: {'Yes' if OPENAI_API_KEY else 'No'}")
-    logger.info(f"LLM Model Name: {LLM_MODEL_NAME}")
-    logger.info(f"GitHub Token Loaded: {'Yes' if GITHUB_TOKEN else 'No'}")
+    # For testing and displaying loaded configs
+    configure_logging()  # Ensure logging is configured if run directly
+    logger.info(f"LLM API Key Loaded: {'Yes' if get_llm_api_key() else 'No'}")
+    logger.info(f"LLM Model Name: {get_LLM_model_name()}")
+    logger.info(f"GitHub Token Loaded: {'Yes' if get_github_token() else 'No'}")
     logger.info(f"MCP Sources: {MCP_SOURCE_URLS}")
+    logger.info(f"GitHub Repositories to Search: {GITHUB_REPOSITORIES_TO_SEARCH}")
+    logger.info(f"Search Result Limit Per Source: {SEARCH_RESULT_LIMIT_PER_SOURCE}")
+    logger.info(f"Search Sources Enabled: {SEARCH_SOURCES_ENABLED}")

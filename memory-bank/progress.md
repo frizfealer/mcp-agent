@@ -11,27 +11,47 @@
 - `src/use_case_generator.py` (Full implementation including LLM integration using OpenAI JSON mode and Pydantic models).
 - `tests/unit/test_use_case_generator.py` (Comprehensive unit tests for `UseCaseGenerator`).
 - `src/main.py` (Basic integration of `InputParser` and `UseCaseGenerator`, displaying their outputs).
+- `src/search_engine/` (Scaffolding complete):
+  - `__init__.py`
+  - `search_manager.py` (with `SearchManager` class and `SearchResult` Pydantic model)
+  - `sources/__init__.py`
+  - `sources/base_source.py` (with `BaseSourceHandler` abstract class)
+  - `sources/github_source.py` (Advanced implementation using LLM analysis of curated GitHub READMEs, local caching, dynamic cache updates, Markdown section extraction, and GitHub star fetching. Unit tests complete and passing.)
+  - `sources/pipedream_mcp_source.py` (placeholder `PipedreamMCPSource`, implementation deferred)
+  - `sources/mcp_market_source.py` (placeholder `MCPMarketSource`, implementation deferred)
+- `src/config.py` (Added `GITHUB_CACHE_PATHS` (implicitly replacing `GITHUB_REPOSITORIES_TO_SEARCH` for `GitHubSource`), `SEARCH_RESULT_LIMIT_PER_SOURCE`, `SEARCH_SOURCES_ENABLED`).
+- `src/search_engine/search_manager.py` (`_initialize_source_handlers` implemented and confirmed operational with the advanced `GitHubSource`).
+- `src/main.py` (Integrated `SearchManager` for use case searching, made `main` async, confirmed operational with advanced `GitHubSource`).
+- `tests/unit/test_main.py` (Updated for current `main.py` functionality).
+- `tests/unit/test_search_manager.py` (Initial tests for `SearchManager` created and relevant for current `SearchManager` with advanced `GitHubSource`).
+- `tests/unit/test_github_source.py` (Tests for the advanced `GitHubSource` created and passing).
 
 ## 2. What's Left to Build
 
 - Core Python modules:
-  - `src/main.py` (Integrate `SearchEngine`, `ResultsFormatter`).
-  - `src/config.py` (Potentially add more specific configurations as modules are developed).
-  - `src/search_engine/` (Full implementation including `search_manager.py` and individual source handlers).
+  - `src/config.py` (Potentially add more specific configurations for Pipedream/MCPMarket if needed).
+  - `src/search_engine/search_manager.py` (Implement deduplication, ranking, result limiting; update `_initialize_source_handlers` when new sources are added).
+  - `src/search_engine/sources/pipedream_mcp_source.py` (Full implementation - web scraping, deferred).
+  - `src/search_engine/sources/mcp_market_source.py` (Full implementation - web scraping, deferred).
   - `src/results_formatter.py` (Full implementation).
-- Unit tests for remaining modules (`src/input_parser.py`, `src/main.py`, `src/config.py`, `src/search_engine/`, `src/results_formatter.py`).
+- Unit tests for:
+  - `src/input_parser.py`
+  - `src/config.py`
+  - `src/search_engine/sources/pipedream_mcp_source.py` (Deferred)
+  - `src/search_engine/sources/mcp_market_source.py` (Deferred)
+  - `src/results_formatter.py`
 - Project `README.md`.
 
 ## 3. Current Status
 
-- **Phase:** Search Engine Planning & Implementation Phase.
-- **Current Activity:** Planning the `SearchEngine` module.
+- **Phase:** Search Engine Integration & Refinement.
+- **Current Activity:** Preparing for next iteration (web scraping sources, results formatting).
 - **Next Immediate Steps:**
-    1. Begin detailed planning for the `SearchEngine` module (`src/search_engine/`).
-        - Define `SearchManager` class structure.
-        - Outline interfaces and initial logic for source handlers (e.g., GitHub, web sources).
-    2. Start scaffolding `src/search_engine/` and its basic components.
-    3. Develop/update unit tests for `src/main.py` to cover its current functionality (including `InputParser` and `UseCaseGenerator` interaction).
+    1. (Deferred to next iteration: Implement `PipedreamMCPSource` and its tests).
+    2. (Deferred to next iteration: Implement `MCPMarketSource` and its tests).
+    3. Implement `ResultsFormatter` module (`src/results_formatter.py`).
+    4. Develop unit tests for `ResultsFormatter`.
+    5. Integrate `ResultsFormatter` into `src/main.py`.
 
 ## 4. Known Issues / Blockers
 
@@ -41,6 +61,32 @@
 
 ## 5. Evolution of Project Decisions
 
+- **2025-05-20:**
+  - Documented significant enhancements to `src/search_engine/sources/github_source.py`. The `GitHubSource` now employs an LLM to analyze curated lists of MCPs from specific GitHub repositories (`modelcontextprotocol/servers`, `punkpeye/awesome-mcp-servers`, `appcypher/awesome-mcp-servers`).
+  - Key features of the enhanced `GitHubSource` include:
+    - Local caching of README files from these repositories (stored in `resources/github/`).
+    - A mechanism to dynamically update these cached files if a `GITHUB_TOKEN` is available and the files are older than one week.
+    - Extraction of relevant sections from the Markdown content of these READMEs for more focused LLM analysis.
+    - The ability to fetch GitHub star counts for identified MCP candidates.
+  - Confirmed that `src/search_engine/search_manager.py` is correctly integrated and fully operational with this advanced `GitHubSource`.
+  - Updated `activeContext.md` and `progress.md` to reflect these changes.
+  - The `GITHUB_CACHE_PATHS` constant in `github_source.py` effectively defines the repositories searched, superseding a direct interpretation of `GITHUB_REPOSITORIES_TO_SEARCH` for this source.
+- **2025-05-18:**
+  - Implemented basic functionality for `GitHubSource` and its unit tests. (Note: This entry is now superseded by the 2025-05-20 entry reflecting the advanced implementation).
+  - Added related configurations (`GITHUB_REPOSITORIES_TO_SEARCH`, `SEARCH_RESULT_LIMIT_PER_SOURCE`) to `src/config.py`.
+  - Updated unit tests for `src/main.py` and `SearchManager`.
+  - Refactored `SearchManager` and `BaseSourceHandler` to remove direct config object dependency.
+  - Implemented `_initialize_source_handlers` in `SearchManager` for `GitHubSource`.
+  - Integrated `SearchManager` into `main.py`.
+  - Deferred web scraping source handlers (`PipedreamMCPSource`, `MCPMarketSource`) to the next iteration.
+  - Next immediate step: Implement `ResultsFormatter`.
+- **2025-05-18 (Earlier):**
+  - Successfully scaffolded the `SearchEngine` module (`src/search_engine/`).
+    - Created `search_manager.py` with `SearchManager` class and `SearchResult` Pydantic model.
+    - Created `sources/base_source.py` with `BaseSourceHandler` abstract class.
+    - Created placeholder source handlers: `github_source.py`, `pipedream_mcp_source.py`, `mcp_market_source.py`.
+  - Updated Memory Bank (`activeContext.md`, `progress.md`) to reflect this.
+  - Next immediate step: Develop/update unit tests for `src/main.py`.
 - **2025-05-14:**
   - Completed implementation of `UseCaseGenerator` (`src/use_case_generator.py`) utilizing OpenAI's JSON mode with Pydantic models for robust, structured output.
   - Developed comprehensive unit tests for `UseCaseGenerator` (`tests/unit/test_use_case_generator.py`), ensuring its functionality and error handling.

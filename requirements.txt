@@ -21,3 +21,5 @@ pytest
 # CLI (optional, for more advanced CLI features than argparse)
 # typer
 # click
+
+markdown-it-py

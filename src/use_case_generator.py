@@ -12,7 +12,7 @@ from typing import List, Optional
 from openai import OpenAI
 from pydantic import BaseModel
 
-from src.config import configure_logging, get_llm_api_key, get_LLM_model_name
+from src.config import configure_logging, get_llm_api_key
 
 # Configure logging if this module is run directly (for testing)
 if __name__ != "__main__":  # Only configure if not main, main.py will configure
@@ -47,6 +47,8 @@ class UseCaseResponse(BaseModel):
 
 # --- UseCaseGenerator Class ---
 
+MODEL_NAME = "gpt-4.1"
+
 
 class UseCaseGenerator:
     """
@@ -64,7 +66,7 @@ class UseCaseGenerator:
             self.client = None
         else:
             self.client = OpenAI(api_key=self.api_key)
-        self.model_name = get_LLM_model_name()
+        self.model_name = MODEL_NAME
         logger.info("UseCaseGenerator initialized.")
 
     def generate_use_cases(self, requirements_text: str) -> Optional[UseCaseResponse]:
