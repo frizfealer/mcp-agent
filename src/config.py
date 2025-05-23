@@ -25,8 +25,15 @@ def configure_logging():
 logger = logging.getLogger(__name__)
 
 # Load environment variables from .env file
-# Looks for .env in the current directory or parent directories
-load_dotenv(override=True)
+# First try the Cloud Run mounted path, then fall back to default behavior
+cloud_run_env_path = "/secrets/.env"
+if os.path.exists(cloud_run_env_path):
+    logger.info(f"Loading environment from Cloud Run mounted file: {cloud_run_env_path}")
+    load_dotenv(dotenv_path=cloud_run_env_path, override=True)
+else:
+    logger.info("Loading environment from local .env file")
+    # Looks for .env in the current directory or parent directories
+    load_dotenv(override=True)
 
 # --- LLM Configuration ---
 # Example: OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
