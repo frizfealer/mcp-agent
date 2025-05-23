@@ -6,11 +6,12 @@ import asyncio  # Added asyncio
 import logging
 
 from src.config import configure_logging
+from src.flowchart_generator import FlowchartGenerator  # Added FlowchartGenerator
 from src.input_parser import InputParser
 from src.search_engine.search_manager import (  # Added SearchManager
     SearchManager,
 )
-from src.search_engine.sources.github_source import GitHubSource  # Import GitHubSource
+from src.search_engine.sources.github_source import GitHubSource
 from src.use_case_generator import UseCaseGenerator
 
 configure_logging()
@@ -74,24 +75,47 @@ async def main():  # Changed to async def
             print("  " + "-" * 20)
         print("--------------------------\n")
 
-        # 4. Initialize SearchManager and search for each use case
+        # Initialize FlowchartGenerator
+        flowchart_generator = FlowchartGenerator()
+
+        # 4. Initialize SearchManager
         github_source = GitHubSource()
         search_manager = SearchManager([github_source])
-        all_found_mcps: dict[int, list[dict]] = {}
 
+        # Process each use case
         for uc in use_cases_response.use_cases:
+            print(f"\nProcessing Use Case: {uc.title} (ID: {uc.id})")
+            print(f"Description: {uc.description}")
+
+            # 4a. Generate Flowchart for the use case
+            logger.info(f"Generating flowchart for use case: '{uc.title}'")
+            flowchart_response = flowchart_generator.generate_flowchart(uc.description)
+
+            if flowchart_response and flowchart_response.flowchart_mermaid_code:
+                print(f"\n--- Flowchart for {uc.title} ---")
+                if flowchart_response.reply:
+                    print(f"Flowchart Description: {flowchart_response.reply}")
+                print("```mermaid")
+                print(flowchart_response.flowchart_mermaid_code)
+                print("```")
+                print("-----------------------------------\n")
+            else:
+                logger.warning(f"Could not generate flowchart for use case: {uc.title}")
+                print(f"--- No Flowchart Generated for {uc.title} ---\n")
+
+            # 4b. Search for MCPs/APIs for the use case
             logger.info(f"Searching for MCPs/APIs for use case: '{uc.title}'")
-            # Construct a query for the search engine, could be title + description
-            search_query = f"{uc.title} {uc.description}"
-            found_mcps = await search_manager.search(search_query)  # Await the async search
-            all_found_mcps[uc.id] = found_mcps
+            search_query = f"{uc.title} {uc.description}\n Flowchart: {flowchart_response.flowchart_mermaid_code}"
+            # Using title and description and flowchart for search
+            found_mcps = await search_manager.search(search_query)
 
             if found_mcps:
-                print(f"\n--- Found MCPs/APIs for Use Case: {uc.title} ---")
+                print(f"--- Found MCPs/APIs for Use Case: {uc.title} ---")
                 for mcp_result in found_mcps:
-                    print(f"  Name: {mcp_result.get('name', '')}")
-                    print(f"  URL: {mcp_result.get('url', '')}")
-                    print(f"  Description: {mcp_result.get('description', '')[:100]}...")  # Print snippet
+                    print(f"  Name: {mcp_result.get('name', 'N/A')}")
+                    print(f"  URL: {mcp_result.get('url', 'N/A')}")
+                    description = mcp_result.get("description", "")
+                    print(f"  Description: {description[:150]}..." if description else "N/A")
                     if mcp_result.get("corresponding_functions"):
                         print(f"  Functions: {mcp_result['corresponding_functions']}")
                     if mcp_result.get("reasoning"):
@@ -102,12 +126,12 @@ async def main():  # Changed to async def
                 print("--------------------------------------------------\n")
             else:
                 print(f"No MCPs/APIs found for use case: {uc.title}\n")
+            print("====================================================\n")  # Separator for each use case block
+
     else:
         logger.warning("No use cases were generated, or an error occurred.")
 
-    # TODO:
-    # 5. Call ResultsFormatter (when implemented)
-    # 6. Print formatted results (when implemented)
+    # ResultsFormatter is deferred. Output is handled directly above.
     logger.info("MCP-Agent processing complete.")
 
 

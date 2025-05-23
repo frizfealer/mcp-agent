@@ -3,17 +3,20 @@ python-dotenv
 httpx
 beautifulsoup4
 lxml # Parser for BeautifulSoup
+pydantic
+
+# UI Framework
+gradio
 
 # LLM Client Libraries (User to uncomment/add specific one)
 openai
 # anthropic
-pydantic
 
 # GitHub API
 PyGithub
 
-# Markdown Processing (optional, if needed for READMEs etc.)
-# markdown-it-py
+# Markdown Processing
+markdown-it-py
 
 # Testing (pytest is recommended)
 pytest
@@ -21,5 +24,3 @@ pytest
 # CLI (optional, for more advanced CLI features than argparse)
 # typer
 # click
-
-markdown-it-py

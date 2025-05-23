@@ -4,9 +4,10 @@
 
 - **Primary Programming Language:** Python (version 3.8+ recommended for `asyncio` features and library compatibility).
 - **LLM Integration:**
-  - **Choice of LLM:** Currently, OpenAI's GPT series (e.g., `gpt-4.1-mini`) is used by `UseCaseGenerator` and `GitHubSource`. The system requires an `OPENAI_API_KEY`.
+  - **Choice of LLM:** OpenAI's GPT series (e.g., `gpt-4.1-mini`) is used by `UseCaseGenerator`, `FlowchartGenerator`, and `GitHubSource`. The system requires an `OPENAI_API_KEY`.
   - **Python LLM Client Libraries:**
-    - `openai` (used by `UseCaseGenerator` and `GitHubSource`).
+    - `openai` (used by `UseCaseGenerator`, `FlowchartGenerator`, and `GitHubSource`).
+    - `instructor` (used with `openai` client for Pydantic model responses in `UseCaseGenerator` and `FlowchartGenerator`).
     - `anthropic` (option for future if Anthropic models are used).
     - Generic HTTP library like `httpx` (option for other LLM APIs).
 - **Web Interaction & Scraping (for MCP/API Search):**
@@ -16,6 +17,8 @@
   - **Apify SDK:** `apify-client` (Python) if using Apify platform/actors (for potential future sources).
 - **Markdown Processing:**
   - `markdown-it-py` (used by `GitHubSource` for parsing cached GitHub READMEs to extract specific sections).
+- **UI Framework:**
+  - `gradio` (for building the web UI).
 - **Environment Variable Management:**
   - `python-dotenv` (to load environment variables from an `.env` file).
 - **Testing Framework:**
@@ -31,15 +34,17 @@
 - **Project Root:** `/Users/yeu-chernharn/repos/mcp_agent` (current working directory).
   - `src/`: Contains all application source code.
     - `__init__.py`
-    - `main.py` (or `cli.py`): Main CLI entry point.
+    - `main.py`: Main CLI entry point.
+    - `gradio_app.py`: Gradio Web UI application.
     - `config.py`: Loads and provides access to configuration (API keys, source URLs).
     - `input_parser.py`
     - `use_case_generator.py`
+    - `flowchart_generator.py`
     - `search_engine/`
       - `__init__.py`
       - `search_manager.py`
       - `sources/` (e.g., `github.py`, `pipedream.py`, `generic_web.py`)
-    - `results_formatter.py`
+    - `results_formatter.py` (Implementation Deferred)
     - `utils.py` (optional, for shared utilities)
   - `tests/`: Contains all tests.
     - `unit/`: For unit tests.
@@ -55,7 +60,7 @@
 - **Internet Access:** Required for LLM API calls and querying web sources.
 - **API Keys:** Valid API keys needed for LLM service and GitHub (for higher rate limits).
 - **Rate Limiting:** Implement respectful request rates and backoff strategies for all external services.
-- **Prompt Engineering:** Significant effort required to create effective prompts for the LLM to extract use cases accurately.
+- **Prompt Engineering:** Significant effort required to create effective prompts for the LLM to extract use cases accurately and generate valid Mermaid flowcharts.
 - **Scraping Reliability:** Web scraping is prone to breakage if website structures change. Prioritize official APIs where available.
 - **Asynchronous Design:** Crucial for performance due to I/O-bound nature of network requests. `asyncio` and `httpx` are key.
 - **Error Handling:** Robust error handling for network issues, API errors, parsing failures, and unexpected data.
